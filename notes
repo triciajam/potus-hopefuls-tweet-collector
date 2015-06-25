@@ -1,0 +1,22 @@
+export PATH="$PATH:~/Desktop/Projects/twitcamp"
+
+export TC_OUTF="hrc,fiorina"
+export TC_USEHASH="TRUE,TRUE"
+export TC_USENONHASH="TRUE,TRUE"
+export TC_WORDS="hillaryclinton,hillary_clinton,hillary2016 fiorina,carly2016"
+
+env | grep TC
+
+Make sure the target folder exists (in this case, test)
+python application.py test TRUE TRUE hillaryclinton,hillary2016
+python application.py test,test2 TRUE,TRUE TRUE,TRUE hillaryclinton,hillary2016 cannes,lions
+
+
+Start here for EB
+http://docs.aws.amazon.com/elasticbeanstalk/latest/dg/create-deploy-python-common-steps.html
+BUT had to install awsecbli this way at end of thread (uninstall the reg way)
+https://forums.aws.amazon.com/thread.jspa?messageID=580745
+Finished This.
+And then: eb create
+Other one that might be helpful:
+http://docs.aws.amazon.com/elasticbeanstalk/latest/dg/command-reference-get-started.html
