@@ -17,6 +17,8 @@ http://docs.aws.amazon.com/elasticbeanstalk/latest/dg/create-deploy-python-commo
 BUT had to install awsecbli this way at end of thread (uninstall the reg way)
 https://forums.aws.amazon.com/thread.jspa?messageID=580745
 Finished This.
-And then: eb create
+
 Other one that might be helpful:
 http://docs.aws.amazon.com/elasticbeanstalk/latest/dg/command-reference-get-started.html
+
+virtual environment
