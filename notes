@@ -24,12 +24,15 @@ http://docs.aws.amazon.com/elasticbeanstalk/latest/dg/command-reference-get-star
 virtual environment
 
 
+NOTES: 
+I need to install everything I will need for my script into my virtual environment.  
+This creates the corrcet requirements.txt file.
+Everything in requirements.txt will be loaded automatically by the EC2 instance.
 
-packages:
-  yum:
-    oauthlib: '0.7.2'
-    requests: '2.7.0'
-    requests-oauthlib: '0.5.0'
-    six: '1.9.0'
-    tweepy: '3.3.0'
 
+ec2-54-152-215-99.compute-1.amazonaws.com
+ec2-52-7-91-120.compute-1.amazonaws.com
+ec2-54-174-203-69.compute-1.amazonaws.com
+ec2-54-175-166-152.compute-1.amazonaws.com
+ec2-52-6-195-31.compute-1.amazonaws.com
+ec2-52-0-203-2.compute-1.amazonaws.com
