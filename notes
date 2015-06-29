@@ -24,10 +24,14 @@ http://docs.aws.amazon.com/elasticbeanstalk/latest/dg/command-reference-get-star
 virtual environment
 
 
+ssh -i thesis.pem ec2-user@
+
 NOTES: 
 I need to install everything I will need for my script into my virtual environment.  
 This creates the corrcet requirements.txt file.
 Everything in requirements.txt will be loaded automatically by the EC2 instance.
+Directory is /home/ec2-user
+
 
 
 ec2-54-152-215-99.compute-1.amazonaws.com

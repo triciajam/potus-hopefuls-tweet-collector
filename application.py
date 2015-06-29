@@ -22,7 +22,7 @@ asecret = "WLY0NsQ5p8ukubIRb95tu56bjflS8FMyyXIiMicxr3cB4" #your access secret
 ckey = "nbE0tEokCo5lRvGHOLa4g0D0E" #your consumer key
 csecret = "wLJBjJFiz1B4tGj239mXMbGGq0rUMlv6LpL0JqtI8HwtYxBb4B" #your consumer secret
 #BASE_DIR = "/Users/trish/Desktop/Projects/twitcamp/" #your base directory. 
-BASE_DIR = "~/twit-candi-2016/" #your base directory. 
+BASE_DIR = "/home/ec2-user/twit-candi-2016/" #your base directory. 
 
 bad_set = ''.join([a for a in string.punctuation if a!='#'])
 downsample_fracs = {}#change this if you only want a subset of the tweets. 
