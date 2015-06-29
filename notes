@@ -25,6 +25,7 @@ virtual environment
 
 
 ssh -i thesis.pem ec2-user@
+aws ec2 get-console-output --instance-id i-a80c0401 --region us-east-1
 
 NOTES: 
 I need to install everything I will need for my script into my virtual environment.  
