@@ -33,6 +33,7 @@ This creates the corrcet requirements.txt file.
 Everything in requirements.txt will be loaded automatically by the EC2 instance.
 Directory is /home/ec2-user
 
+tail /var/log/httpd/error_log for errors
 
 
 ec2-54-152-215-99.compute-1.amazonaws.com
@@ -41,3 +42,144 @@ ec2-54-174-203-69.compute-1.amazonaws.com
 ec2-54-175-166-152.compute-1.amazonaws.com
 ec2-52-6-195-31.compute-1.amazonaws.com
 ec2-52-0-203-2.compute-1.amazonaws.com
+
+
+
+## FOR AUTO-SCALING
+
+
+aws iam create-instance-profile --instance-profile-name ec2_terminate
+
+{
+    "InstanceProfile": {
+        "InstanceProfileId": "AIPAIUTJRG6IZ7JCUCSRK", 
+        "Roles": [], 
+        "CreateDate": "2015-06-30T19:02:07.118Z", 
+        "InstanceProfileName": "ec2_terminate", 
+        "Path": "/", 
+        "Arn": "arn:aws:iam::520531084022:instance-profile/ec2_terminate"
+    }
+}
+
+
+aws iam create-role \
+        --role-name ec2_terminate \
+        --assume-role-policy-document file://role.json
+
+{
+    "Role": {
+        "AssumeRolePolicyDocument": {
+            "Statement": [
+                {
+                    "Action": "sts:AssumeRole", 
+                    "Sid": "", 
+                    "Effect": "Allow", 
+                    "Principal": {
+                        "Service": "ec2.amazonaws.com"
+                    }
+                }
+            ]
+        }, 
+        "RoleId": "AROAIZTP7LTE3TXYOE4NM", 
+        "CreateDate": "2015-06-30T19:04:15.486Z", 
+        "RoleName": "ec2_terminate", 
+        "Path": "/", 
+        "Arn": "arn:aws:iam::520531084022:role/ec2_terminate"
+    }
+}
+
+aws iam add-role-to-instance-profile \
+      --instance-profile-name ec2_terminate \
+      --role-name ec2_terminate
+
+ami_id=ami-1ecae776 # Amazon Linux
+region=us-east-1    # Region for running the demo
+zone=${region}e     # A zone in that region
+launch_config=lc-recurring
+auto_scale_group=ag-recurring
+
+export EC2_URL=https://$region.ec2.amazonaws.com
+export AWS_AUTO_SCALING_URL=https://autoscaling.$region.amazonaws.com
+
+
+aws autoscaling create-launch-configuration \
+   --launch-configuration-name $launch_config \
+   --image-id $ami_id \
+   --iam-instance-profile arn:aws:iam::520531084022:instance-profile/ec2_terminate \
+   --key-name thesis \
+   --security-groups triciajam_SG_useast \
+   --instance-type t2.micro \
+   --user-data file://tc_aws_startup.sh 
+
+aws autoscaling  create-auto-scaling-group \
+    --auto-scaling-group-name $auto_scale_group \
+    --launch-configuration-name $launch_config \
+    --min-size 0 \
+    --max-size 0 \
+    --availability-zones $zone \
+    --tags "Key=Name,Value=recurring-instance"
+
+aws autoscaling suspend-processes \
+    --auto-scaling-group-name $auto_scale_group \
+    --scaling-processes ReplaceUnhealthy
+
+aws autoscaling put-scheduled-update-group-action \
+    --scheduled-action-name start \
+    --auto-scaling-group-name $auto_scale_group \
+    --min-size 1 \
+    --max-size 1 \
+    --desired-capacity 1 \
+    --recurrence "40 18 * * *"
+
+aws autoscaling put-scheduled-update-group-action \
+    --scheduled-action-name cleanup \
+    --auto-scaling-group-name $auto_scale_group \
+    --min-size 0 \
+    --max-size 0 \
+    --recurrence "50 18 * * *"
+
+aws autoscaling describe-scaling-activities
+
+aws autoscaling delete-auto-scaling-group --auto-scaling-group-name $auto_scale_group
+aws autoscaling delete-launch-configuration --launch-configuration-name $launch_config
+
+
+---
+
+# didn't work on amazon linux
+#ssh -i thesis.pem ec2-user@ec2-54-174-15-153.compute-1.amazonaws.com grep user-data: /var/log/syslog
+# this one worked
+ssh -i thesis.pem ec2-user@ cat /var/log/user-data.log 
+ec2-get-console-output i-0c9e9461 | grep user-data:
+
+---
+which python
+which pip
+which virtualenv
+#sudo alternatives --set python /usr/bin/python2.6
+python --version
+
+# Amazon Linux, ec2-user
+sudo yum -y update
+sudo pip install --upgrade pip
+mkdir venv
+cd venv
+virtualenv tc
+source tc/bin/activate
+
+pip install oauthlib
+pip install requests
+pip install requests-oauthlib
+pip install six
+pip install tweepy
+pip install wheel
+pip install boto
+pip install sh
+
+
+#notes -- $ pip install -r requirements.txt --no-index --find-links file:///tmp/packages
+
+
+
+
+

@@ -49,14 +49,11 @@ pip install wheel
 pip install boto
 pip install sh
 
-#pip install oauthlib==0.7.2
-#pip install requests==2.7.0
-#pip install requests-oauthlib==0.5.0
-#pip install six==1.9.0
-#pip install tweepy==3.3.0
-#pip install wheel==0.24.0
-
 echo "All packages installed."
+
+# grab the script and JSON files
+
+python tc_application.py
 
 # get the instance id
 # INSTANCE_ID=`ec2metadata --instance-id`
