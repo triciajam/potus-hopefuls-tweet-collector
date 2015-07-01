@@ -1,0 +1,11 @@
+{
+  "folders": [ "hrc", "fiorina","paul","bush" ],
+  "useHash": [ "TRUE", "TRUE","TRUE","TRUE" ],
+  "useNonHash": [ "TRUE", "TRUE","TRUE","TRUE" ],
+  "words": [ "hillaryclinton,hillary2016", 
+             "carlyfiorina,carly2016",
+             "randpaul,paul2016",
+             "jebbush,bush2016"
+           ],
+  "BASE_DIR": "/Users/trish/Desktop/Projects/twitcamp/"
+}
