@@ -3,26 +3,48 @@ from tweepy.streaming import StreamListener
 import sys, json, os, string, random, os
 from traceback import print_exc
 
-env_outfiles = os.environ["TC_OUTF"]
-env_useHash = os.environ["TC_USEHASH"]
-env_useNonHash = os.environ["TC_USENONHASH"]
-env_words = os.environ["TC_WORDS"]
+with open('creds.json') as creds_file:    
+    creds = json.load(creds_file)
+    
+atoken = creds["atoken"]
+asecret = creds["asecret"]
+ckey = creds["ckey"]
+csecret = creds["csecret"]
+
+print "Creds:"
+print atoken
+print asecret
+print ckey
+print csecret
+
+with open('config.json') as config_file:    
+    config = json.load(config_file)
+
+env_outfiles = config["folders"]
+env_useHash = config["useHash"]
+env_useNonHash = config["useNonHash"]
+env_words = config["words"]
+BASE_DIR = config["BASE_DIR"]
+
+#env_outfiles = os.environ["TC_OUTF"]
+#env_useHash = os.environ["TC_USEHASH"]
+#env_useNonHash = os.environ["TC_USENONHASH"]
+#env_words = os.environ["TC_WORDS"]
 
 print "Arguments:"
 print env_outfiles
 print env_useHash
 print env_useNonHash
 print env_words
-print env_words.split()
 
 #print env_outfiles.split(',')
 
-atoken = "165655742-7jwGBomBbT63xzxk8XbEvLbWl5a0p4kQ3oOKW2IV" #your access token
-asecret = "WLY0NsQ5p8ukubIRb95tu56bjflS8FMyyXIiMicxr3cB4" #your access secret
-ckey = "nbE0tEokCo5lRvGHOLa4g0D0E" #your consumer key
-csecret = "wLJBjJFiz1B4tGj239mXMbGGq0rUMlv6LpL0JqtI8HwtYxBb4B" #your consumer secret
+#atoken = "165655742-7jwGBomBbT63xzxk8XbEvLbWl5a0p4kQ3oOKW2IV" #your access token
+#asecret = "WLY0NsQ5p8ukubIRb95tu56bjflS8FMyyXIiMicxr3cB4" #your access secret
+#ckey = "nbE0tEokCo5lRvGHOLa4g0D0E" #your consumer key
+#csecret = "wLJBjJFiz1B4tGj239mXMbGGq0rUMlv6LpL0JqtI8HwtYxBb4B" #your consumer secret
 #BASE_DIR = "/Users/trish/Desktop/Projects/twitcamp/" #your base directory. 
-BASE_DIR = "/home/ec2-user/twit-candi-2016/" #your base directory. 
+#BASE_DIR = "/home/ec2-user/twit-candi-2016/" #your base directory. 
 
 bad_set = ''.join([a for a in string.punctuation if a!='#'])
 downsample_fracs = {}#change this if you only want a subset of the tweets. 
@@ -126,28 +148,30 @@ class listener(StreamListener):
     
 
 if __name__ == '__main__':
-    if len(sys.argv) < 5:
-        raise Exception('Wrong number of arguments! See documentation.')
+    #if len(sys.argv) < 5:
+    #    raise Exception('Wrong number of arguments! See documentation.')
     if None in [atoken, asecret, ckey, csecret, BASE_DIR]:
         raise Exception('Please be sure to set all arguments in lines 6 - 10')
     global outfileDirs
     global tweetGroups
     global allTweetsToMonitor
 
-    outfileDirs = env_outfiles.split(',')#get names of outfiles
+    #outfileDirs = env_outfiles.split(',')#get names of outfiles
+    outfileDirs = env_outfiles
+    #.split(',')
+    assert([a.lower() in ['true', 'false'] for a in env_useHash])
+    assert([a.lower() in ['true', 'false'] for a in env_useNonHash])
+    useHashtags = [a.lower() == 'true' for a in env_useHash]#figure out whether to use hashtags. 
+    useNonHashtags = [a.lower() == 'true' for a in env_useNonHash]
     
-    assert([a.lower() in ['true', 'false'] for a in env_useHash.split(',')])
-    assert([a.lower() in ['true', 'false'] for a in env_useNonHash.split(',')])
-    useHashtags = [a.lower() == 'true' for a in env_useHash.split(',')]#figure out whether to use hashtags. 
-    useNonHashtags = [a.lower() == 'true' for a in env_useNonHash.split(',')]
-    
-    wordsToMonitor = [a.split(',') for a in env_words.split()]
+    wordsToMonitor = [a.split(',') for a in env_words]
+    #wordsToMonitor = [a.split(',') for a in env_words.split()]
     wordsToMonitor = [[a.lower().replace('_', ' ') for a in b] for b in wordsToMonitor]
     
-    print "DEbug"
-    print useHashtags
-    print useNonHashtags
-    print wordsToMonitor
+    #print "DEbug"
+    #print useHashtags
+    #print useNonHashtags
+    #print wordsToMonitor
      
     tweetGroups = [[] for a in wordsToMonitor]
     for i in range(len(wordsToMonitor)):
