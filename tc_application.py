@@ -3,6 +3,9 @@ from tweepy.streaming import StreamListener
 import sys, json, os, string, random, os
 from traceback import print_exc
 
+reload(sys)  
+sys.setdefaultencoding('utf8')
+
 with open('creds.json') as creds_file:    
     creds = json.load(creds_file)
     
@@ -180,7 +183,10 @@ if __name__ == '__main__':
             auth.set_access_token(atoken, asecret)
             twitterStream = Stream(auth, listener(), timeout = 60, stall_warnings = True)
             ones_to_track = [','.join(['%s' % s for s in allTweetsToMonitor])]
-            twitterStream.filter(track=ones_to_track)
+            ones_to_track2 = [i.encode('utf-8') for i in ones_to_track]
+            # I need to make ones_to_track unicode
+            # http://stackoverflow.com/questions/26621993/unicode-decode-error-when-retrieving-twitter-data-using-python
+            twitterStream.filter(track=ones_to_track2)
         except KeyboardInterrupt:
             raise
         except:
