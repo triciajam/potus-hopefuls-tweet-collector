@@ -101,7 +101,7 @@ auto_scale_group=ag-recurring
 export EC2_URL=https://$region.ec2.amazonaws.com
 export AWS_AUTO_SCALING_URL=https://autoscaling.$region.amazonaws.com
 
-
+# this one is for shutting down
 aws autoscaling create-launch-configuration \
    --launch-configuration-name $launch_config \
    --image-id $ami_id \
@@ -109,7 +109,20 @@ aws autoscaling create-launch-configuration \
    --key-name thesis \
    --security-groups triciajam_SG_useast \
    --instance-type t2.micro \
-   --user-data file://tc_aws_startup.sh 
+   --user-data file://tc_aws_start.sh 
+
+# this is for accessing buckets
+# arn:aws:iam::520531084022:instance-profile/access-buckets
+
+aws autoscaling create-launch-configuration \
+   --launch-configuration-name $launch_config \
+   --image-id $ami_id \
+   --iam-instance-profile arn:aws:iam::520531084022:instance-profile/access-buckets \
+   --key-name thesis \
+   --security-groups triciajam_SG_useast \
+   --instance-type t2.micro \
+   --user-data file://tc_aws_start.sh 
+
 
 aws autoscaling  create-auto-scaling-group \
     --auto-scaling-group-name $auto_scale_group \
@@ -129,14 +142,14 @@ aws autoscaling put-scheduled-update-group-action \
     --min-size 1 \
     --max-size 1 \
     --desired-capacity 1 \
-    --recurrence "40 18 * * *"
+    --recurrence "31 12 * * *"
 
 aws autoscaling put-scheduled-update-group-action \
     --scheduled-action-name cleanup \
     --auto-scaling-group-name $auto_scale_group \
     --min-size 0 \
     --max-size 0 \
-    --recurrence "50 18 * * *"
+    --recurrence "42 12 * * *"
 
 aws autoscaling describe-scaling-activities
 
@@ -149,7 +162,9 @@ aws autoscaling delete-launch-configuration --launch-configuration-name $launch_
 # didn't work on amazon linux
 #ssh -i thesis.pem ec2-user@ec2-54-174-15-153.compute-1.amazonaws.com grep user-data: /var/log/syslog
 # this one worked
+ssh -i thesis.pem ec2-user@ec2-54-172-66-106.compute-1.amazonaws.com cat /var/log/user-data.log 
 ssh -i thesis.pem ec2-user@ cat /var/log/user-data.log 
+
 ec2-get-console-output i-0c9e9461 | grep user-data:
 
 ---

@@ -38,8 +38,10 @@ pip install --upgrade pip
 which python
 which pip
 
+echo "Installing jq"
+yum -y install jq
 
-echo "Installing Dependencies"
+echo "Installing Python Dependencies"
 pip install oauthlib
 pip install requests
 pip install requests-oauthlib
@@ -55,15 +57,26 @@ echo "All packages installed."
 echo "Making directories."
 mkdir -p /tmp
 mkdir -p /tmp/twit-candi-2016
+mkdir -p /tmp/twit-candi-2016/dist
 echo "Downloading scrips."
 
 # grab the script and JSON files
 echo "Retrieving Data"
-aws s3 cp s3://twit-candi-2016/dist/ /tmp/dist --recursive
-
+aws s3 sync s3://twit-candi-2016/dist/ /tmp/twit-candi-2016/dist 
 #curl -L -o /tmp/tc_application.py github.com/triciajam/twit-candi-2016/raw/master/tc_application.py
 #curl -L -o /tmp/config.json github.com/triciajam/twit-candi-2016/raw/master/config.json
 
+cd /tmp/twit-candi-2016/dist
+chmod 777 tc_application.py
+
+#cat config.json | jq '.folders'
+#cat config.json | jq '.folders[]'
+#cat config.json | jq '[.folders[]]'
+
+fd=`cat config.json | jq -r '.folders[]'`
+echo "Data Folders created are $fd"
+
+#python tc_application.py
 
 # get the instance id
 # INSTANCE_ID=`ec2metadata --instance-id`
