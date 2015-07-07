@@ -51,9 +51,19 @@ pip install sh
 
 echo "All packages installed."
 
-# grab the script and JSON files
 
-python tc_application.py
+echo "Making directories."
+mkdir -p /tmp
+mkdir -p /tmp/twit-candi-2016
+echo "Downloading scrips."
+
+# grab the script and JSON files
+echo "Retrieving Data"
+aws s3 cp s3://twit-candi-2016/dist/ /tmp/dist --recursive
+
+#curl -L -o /tmp/tc_application.py github.com/triciajam/twit-candi-2016/raw/master/tc_application.py
+#curl -L -o /tmp/config.json github.com/triciajam/twit-candi-2016/raw/master/config.json
+
 
 # get the instance id
 # INSTANCE_ID=`ec2metadata --instance-id`
