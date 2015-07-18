@@ -54,18 +54,18 @@ pip install sh
 echo "All packages installed."
 
 
-echo "Making directories."
+echo "Making base directory."
 mkdir -p /tmp
 mkdir -p /tmp/twit-candi-2016
 mkdir -p /tmp/twit-candi-2016/dist
-echo "Downloading scrips."
 
 # grab the script and JSON files
-echo "Retrieving Data"
+echo "Retrieving application scripts."
 aws s3 sync s3://twit-candi-2016/dist/ /tmp/twit-candi-2016/dist 
 #curl -L -o /tmp/tc_application.py github.com/triciajam/twit-candi-2016/raw/master/tc_application.py
 #curl -L -o /tmp/config.json github.com/triciajam/twit-candi-2016/raw/master/config.json
 
+echo "Setting up filesystem."
 cd /tmp/twit-candi-2016/dist
 chmod 777 tc_application.py
 
@@ -74,9 +74,21 @@ chmod 777 tc_application.py
 #cat config.json | jq '[.folders[]]'
 
 fd=`cat config.json | jq -r '.folders[]'`
-echo "Data Folders created are $fd"
+echo "Data folders to create are $fd"
 
-#python tc_application.py
+for f in $fd; do
+  mkdir -p /tmp/twit-candi-2016/dist/$f
+done  
+echo "Data folders created."
+
+echo "Setting up cron."
+crontab -l
+dt=$(date '+%Y%m%d.%H%M%S');
+echo "0 */3 * * * root aws s3 cp /tmp/twit-candi-2016/dist s3://twit-candi-2016/data/$dt/ --recursive --exclude creds.json" >> /etc/crontab
+crontab -l
+
+echo "Starting application."
+python tc_application.py
 
 # get the instance id
 # INSTANCE_ID=`ec2metadata --instance-id`

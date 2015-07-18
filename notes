@@ -114,6 +114,10 @@ aws autoscaling create-launch-configuration \
 # this is for accessing buckets
 # arn:aws:iam::520531084022:instance-profile/access-buckets
 
+aws autoscaling delete-auto-scaling-group --auto-scaling-group-name $auto_scale_group
+aws autoscaling delete-launch-configuration --launch-configuration-name $launch_config
+
+
 aws autoscaling create-launch-configuration \
    --launch-configuration-name $launch_config \
    --image-id $ami_id \
@@ -142,14 +146,14 @@ aws autoscaling put-scheduled-update-group-action \
     --min-size 1 \
     --max-size 1 \
     --desired-capacity 1 \
-    --recurrence "31 12 * * *"
+    --recurrence "0 12 * * *"
 
 aws autoscaling put-scheduled-update-group-action \
     --scheduled-action-name cleanup \
     --auto-scaling-group-name $auto_scale_group \
     --min-size 0 \
     --max-size 0 \
-    --recurrence "42 12 * * *"
+    --recurrence "0 15 * * *"
 
 aws autoscaling describe-scaling-activities
 
@@ -164,6 +168,7 @@ aws autoscaling delete-launch-configuration --launch-configuration-name $launch_
 # this one worked
 ssh -i thesis.pem ec2-user@ec2-54-172-66-106.compute-1.amazonaws.com cat /var/log/user-data.log 
 ssh -i thesis.pem ec2-user@ cat /var/log/user-data.log 
+ssh -i thesis.pem ec2-user@
 
 ec2-get-console-output i-0c9e9461 | grep user-data:
 
@@ -194,7 +199,35 @@ pip install sh
 
 #notes -- $ pip install -r requirements.txt --no-index --find-links file:///tmp/packages
 
+# for loop in one line - bash
+for i in $inst; do echo $i; done 
+
+# makedate
+dt=$(date '+%Y%m%d %H:%M:%S');
 
 
+# crontab stuff
+# GREAT crontab
+http://serverfault.com/questions/449651/why-is-my-crontab-not-working-and-how-can-i-troubleshoot-it
+http://askubuntu.com/questions/117978/script-doesnt-run-via-crontab-but-works-fine-standalone
+# check logs
+sudo cat /var/log/cron
+cat /etc/crontab
+# See whats happening
+crontab -l
+# edit it
+crontab -e 
+* * * * * aws s3 cp /tmp/twit-candi-2016/dist s3://twit-candi-2016/data/ --recursive
+* * * * * aws s3 cp /tmp/twit-candi-2016/dist s3://twit-candi-2016/data/`date +"\%Y\%m\%d.\%H\%M\%S"`/ --recursive --exclude "creds.json"
+
+dt=$(date '+%Y%m%d.%H%M%S');
+echo "* */1 * * * root aws s3 cp /tmp/twit-candi-2016/dist s3://twit-candi-2016/data/$dt/ --recursive --exclude creds.json" >> /etc/crontab
+
+# check the python output
+sudo cat /var/log/messages
 
 
+cat config.json | jq '.folders'[]
+fd=`cat config.json | jq -r '.folders'[]`
+for f in $fd; do mkdir -p $f; done
+python tc_app

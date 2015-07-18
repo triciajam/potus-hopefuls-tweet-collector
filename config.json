@@ -1,11 +1,27 @@
 {
-  "folders": [ "hrc", "fiorina","paul","bush" ],
-  "useHash": [ "TRUE", "TRUE","TRUE","TRUE" ],
-  "useNonHash": [ "TRUE", "TRUE","TRUE","TRUE" ],
-  "words": [ "hillaryclinton,hillary2016", 
-             "carlyfiorina,carly2016",
-             "randpaul,paul2016",
-             "jebbush,bush2016"
+  "folders": [ "bush","carson","christie","cruz","fiorina","graham","huckabee","jindal","pataki","paul","perry","rubio","santorum","trump","walker","chafee","clinton","omalley","sanders","webb" ],
+  "useHash": [ "TRUE","TRUE","TRUE","TRUE","TRUE", "TRUE","TRUE","TRUE","TRUE", "TRUE","TRUE","TRUE","TRUE", "TRUE","TRUE","TRUE","TRUE", "TRUE","TRUE","TRUE" ],
+  "useNonHash": [ "TRUE","TRUE","TRUE","TRUE","TRUE", "TRUE","TRUE","TRUE","TRUE", "TRUE","TRUE","TRUE","TRUE", "TRUE","TRUE","TRUE","TRUE", "TRUE","TRUE","TRUE" ],
+  "words": [  "jebbush,jeb_bush,jeb2016,bush2016",
+              "bencarson,ben_carson,ben2016,carson2016,realbencarson",
+              "chrischristie,chris_christie,chris2016,christie2016",
+              "tedcruz,ted_cruz,ted2016,cruz2016",
+              "carlyfiorina,carly_fiorina,carly2016,fiorina2016",
+              "lindseygraham,lindsey_graham,lindsey2016,graham2016",
+              "mikehuckabee,mike_huckabee,mike2016,huckabee2016",
+              "bobbyjindal,bobby_jindal,bobby2016,jindal2016",
+              "georgepataki,george_pataki,george2016,pataki2016",
+              "randpaul,rand_paul,rand2016,paul2016",
+              "rickperry,rick_perry,rick2016,perry2016",
+              "marcorubio,marco_rubio,marco2016,rubio2016",
+              "ricksantorum,rick_santorum,rick2016,santorum2016",
+              "donaldtrump,donald_trump,donald2016,trump2016",
+              "scottwalker,scott_walker,scott2016,walker2016",
+              "lincolnchafee,lincoln_chafee,lincoln2016,chafee2016",
+              "hillaryclinton,hillary_clinton,hillary2016,clinton2016", 
+              "martinomalley,martin_omalley,martin2016,omalley2016",
+              "berniesanders,bernie_sanders,bernie2016,sanders2016", 
+              "jimwebb,jim_webb,jim2016,clinton2016"
            ],
-  "BASE_DIR": "/Users/trish/Desktop/Projects/twitcamp/"
+  "BASE_DIR": "/tmp/twit-candi-2016/dist/"
 }
