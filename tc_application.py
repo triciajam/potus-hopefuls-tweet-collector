@@ -1,6 +1,6 @@
 from tweepy import Stream, OAuthHandler
 from tweepy.streaming import StreamListener
-import sys, json, os, string, random, os
+import sys, json, os, string, random, os, time
 from traceback import print_exc
 
 reload(sys)  
@@ -27,6 +27,8 @@ env_outfiles = config["folders"]
 env_useHash = config["useHash"]
 env_useNonHash = config["useNonHash"]
 env_words = config["words"]
+cats = config["categories"]
+cands = config["candidates"]
 BASE_DIR = config["BASE_DIR"]
 
 #env_outfiles = os.environ["TC_OUTF"]
@@ -94,6 +96,7 @@ class listener(StreamListener):
     def on_data(self, data):
         try:
             d = json.loads(data)
+                        
             retweet = 'retweeted_status' in d
             if not retweet:
                 tweet_text = d['text'].encode('utf-8', 'ignore')
@@ -107,6 +110,10 @@ class listener(StreamListener):
                 print 'Unable to assign tweet to a group; hashtags were', hashtags, 'groups were', groups, 'tweet text', tweet_text
             for idx in groups:
                 group = outfileDirs[idx]
+                d['tc_cand'] = cands[idx]
+                d['tc_cat'] = cats[idx]
+                d['tc_text'] = group if cats[idx]=="hashtags" else ""
+                d['tc_date'] = time.strftime("%Y%m%d")
                 if group in downsample_fracs and random.random() > downsample_fracs[group]:#if we are down-sampling, only take some tweets. 
                     continue
 
@@ -165,7 +172,10 @@ if __name__ == '__main__':
     #print "DEbug"
     #print useHashtags
     #print useNonHashtags
-    #print wordsToMonitor
+    print "wordsToMonitor"
+    print wordsToMonitor
+    print "range"
+    print `range(len(wordsToMonitor))`
      
     tweetGroups = [[] for a in wordsToMonitor]
     for i in range(len(wordsToMonitor)):

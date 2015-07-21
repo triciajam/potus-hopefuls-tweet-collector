@@ -95,8 +95,8 @@ aws iam add-role-to-instance-profile \
 ami_id=ami-1ecae776 # Amazon Linux
 region=us-east-1    # Region for running the demo
 zone=${region}e     # A zone in that region
-launch_config=lc-recurring
-auto_scale_group=ag-recurring
+launch_config=lc-cand-mentions
+auto_scale_group=ag-cand-mentions
 
 export EC2_URL=https://$region.ec2.amazonaws.com
 export AWS_AUTO_SCALING_URL=https://autoscaling.$region.amazonaws.com
@@ -117,6 +117,7 @@ aws autoscaling create-launch-configuration \
 aws autoscaling delete-auto-scaling-group --auto-scaling-group-name $auto_scale_group
 aws autoscaling delete-launch-configuration --launch-configuration-name $launch_config
 
+. tc_s3_upload.sh twit-candi-2016/dist/ 
 
 aws autoscaling create-launch-configuration \
    --launch-configuration-name $launch_config \
@@ -146,14 +147,14 @@ aws autoscaling put-scheduled-update-group-action \
     --min-size 1 \
     --max-size 1 \
     --desired-capacity 1 \
-    --recurrence "0 12 * * *"
+    --recurrence "0 16 * * *"
 
 aws autoscaling put-scheduled-update-group-action \
     --scheduled-action-name cleanup \
     --auto-scaling-group-name $auto_scale_group \
     --min-size 0 \
     --max-size 0 \
-    --recurrence "0 15 * * *"
+    --recurrence "15 19 * * *"
 
 aws autoscaling describe-scaling-activities
 
@@ -231,3 +232,33 @@ cat config.json | jq '.folders'[]
 fd=`cat config.json | jq -r '.folders'[]`
 for f in $fd; do mkdir -p $f; done
 python tc_app
+
+
+
+# size of all the buckets
+aws s3 ls s3://twit-candi-2016/data --recursive | awk 'BEGIN {total=0}{total+=$3}END{print total/1024/1024" MB"}'
+
+# get jq
+$ wget http://stedolan.github.io/jq/download/linux64/jq (64-bit system)
+$ chmod +x ./jq
+$ sudo cp jq /usr/bin
+
+# of the tweepy file dump - just aline of objects, not an array
+cat clinton/clinton1 | jq '.user'
+cat clinton/clinton1 | jq '.user.id'
+cat clinton/clinton1 | jq '.text'
+cat clinton/clinton1 | jq '.retweeted'
+cat clinton/clinton1 | jq '.entities.user_mentions'
+cat clinton/clinton1 | jq '.entities.hashtags'
+# pretty print the JSON
+cat clinton/clinton4 | jq '.'
+cat config.json | jq '.categories | length'
+
+show dbs
+# this is from OS shell
+mongoimport -d test -c clinton test/clinton/clinton4 
+# this is from mongo shell
+db.clinton.find({"timestamp_ms":"1437421308354"})
+
+
+git checkout -b feature/issue-1544-include-gradient-and-elbo-exceptions origin/feature/issue-1544-include-gradient-and-elbo-exceptions
