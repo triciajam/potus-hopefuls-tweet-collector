@@ -239,9 +239,9 @@ python tc_app
 aws s3 ls s3://twit-candi-2016/data --recursive | awk 'BEGIN {total=0}{total+=$3}END{print total/1024/1024" MB"}'
 
 # get jq
-$ wget http://stedolan.github.io/jq/download/linux64/jq (64-bit system)
-$ chmod +x ./jq
-$ sudo cp jq /usr/bin
+sudo wget https://stedolan.github.io/jq/download/linux64/jq 
+sudo chmod +x ./jq
+sudo cp jq /usr/bin
 
 # of the tweepy file dump - just aline of objects, not an array
 cat clinton/clinton1 | jq '.user'
@@ -254,11 +254,35 @@ cat clinton/clinton1 | jq '.entities.hashtags'
 cat clinton/clinton4 | jq '.'
 cat config.json | jq '.categories | length'
 
+cat clinton/clinton2 | jq '.entities.user_mentions[].screen_name'
+cat clinton/clinton2 | jq '.entities.hashtags[].text'
+cat clinton/clinton1 | jq '.user.screen_name'
+
 show dbs
 # this is from OS shell
 mongoimport -d test -c clinton test/clinton/clinton4 
 # this is from mongo shell
 db.clinton.find({"timestamp_ms":"1437421308354"})
 
+# loop through directories only
+for f in */; do echo $f; done
+# most recent file
+ls -t clinton | head -n1
+# remove last line in place
+sed -i '' -e '$ d' clinton/clinton2
 
-git checkout -b feature/issue-1544-include-gradient-and-elbo-exceptions origin/feature/issue-1544-include-gradient-and-elbo-exceptions
+fd=`for f in */; do echo $f; done`
+lastones=`for f in */; do ls -t $f | head -n1; done`
+echo $lastones
+
+for f in */; do
+  fname=`ls -t $f | head -n1`
+  echo $f$fname
+#echo $f; 
+done
+for f in */; do fname=`ls -t $f | head -n1 `; echo $f$fname; done
+
+out=`for f in */; do fname=\`ls -t $f | head -n1 \`; echo $f$fname; done`
+
+
+
