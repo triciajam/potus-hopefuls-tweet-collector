@@ -1,9 +1,9 @@
 {
-  "folders": [ "bush","carson","christie","cruz","fiorina","graham","huckabee","jindal","pataki","paul","perry","rubio","santorum","trump","walker","chafee","clinton","omalley","sanders","webb","allin","tellingit","cruzcrew" ],
-  "categories": [ "mentions","mentions","mentions","mentions","mentions","mentions","mentions","mentions","mentions","mentions","mentions","mentions","mentions","mentions","mentions","mentions","mentions","mentions","mentions","mentions","hashtags","hashtags","hashtags" ],
-  "candidates": [ "bush","carson","christie","cruz","fiorina","graham","huckabee","jindal","pataki","paul","perry","rubio","santorum","trump","walker","chafee","clinton","omalley","sanders","webb","bush","christie","cruz" ],
-  "useHash": [ "TRUE","TRUE","TRUE","TRUE","TRUE", "TRUE","TRUE","TRUE","TRUE", "TRUE","TRUE","TRUE","TRUE", "TRUE","TRUE","TRUE","TRUE", "TRUE","TRUE","TRUE","TRUE","TRUE","TRUE" ],
-  "useNonHash": [ "TRUE","TRUE","TRUE","TRUE","TRUE", "TRUE","TRUE","TRUE","TRUE", "TRUE","TRUE","TRUE","TRUE", "TRUE","TRUE","TRUE","TRUE", "TRUE","TRUE","TRUE","FALSE","FALSE","FALSE" ],
+  "folders": [ "bush","carson","christie","cruz","fiorina","graham","huckabee","jindal","pataki","paul","perry","rubio","santorum","trump","walker","chafee","clinton","omalley","sanders","webb","allin","tellingit","cruzcrew","feelthebern" ],
+  "categories": [ "mentions","mentions","mentions","mentions","mentions","mentions","mentions","mentions","mentions","mentions","mentions","mentions","mentions","mentions","mentions","mentions","mentions","mentions","mentions","mentions","hashtags","hashtags","hashtags","hashtags" ],
+  "candidates": [ "bush","carson","christie","cruz","fiorina","graham","huckabee","jindal","pataki","paul","perry","rubio","santorum","trump","walker","chafee","clinton","omalley","sanders","webb","bush","christie","cruz","sanders" ],
+  "useHash": [ "TRUE","TRUE","TRUE","TRUE","TRUE", "TRUE","TRUE","TRUE","TRUE", "TRUE","TRUE","TRUE","TRUE", "TRUE","TRUE","TRUE","TRUE", "TRUE","TRUE","TRUE","TRUE","TRUE","TRUE","TRUE" ],
+  "useNonHash": [ "TRUE","TRUE","TRUE","TRUE","TRUE", "TRUE","TRUE","TRUE","TRUE", "TRUE","TRUE","TRUE","TRUE", "TRUE","TRUE","TRUE","TRUE", "TRUE","TRUE","TRUE","FALSE","FALSE","FALSE","FALSE" ],
   "words": [  "jebbush,jeb_bush,jeb2016,bush2016",
               "bencarson,ben_carson,ben2016,carson2016,realbencarson",
               "chrischristie,chris_christie,chris2016,christie2016,govchristie",
@@ -26,7 +26,8 @@
               "jimwebb,jim_webb,jim2016,webb2016,jimwebbusa",
               "allinforjeb",
               "tellingitlikeitis",
-              "cruzcrew"              
+              "cruzcrew",
+              "feelthebern"
            ],
   "BASE_DIR": "/tmp/twit-candi-2016/dist/"
 }

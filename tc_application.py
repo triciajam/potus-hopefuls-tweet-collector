@@ -14,12 +14,10 @@ asecret = creds["asecret"]
 ckey = creds["ckey"]
 csecret = creds["csecret"]
 
-print "Creds:"
-print atoken
-print asecret
-print ckey
-print csecret
-
+mode = "prod"
+if len(sys.argv) > 1:
+  mode=sys.argv[1]
+ 
 with open('config.json') as config_file:    
     config = json.load(config_file)
 
@@ -31,16 +29,23 @@ cats = config["categories"]
 cands = config["candidates"]
 BASE_DIR = config["BASE_DIR"]
 
+if mode=="test":
+  BASE_DIR="/Users/trish/Desktop/Projects/twitcamp/"
+
+
 #env_outfiles = os.environ["TC_OUTF"]
 #env_useHash = os.environ["TC_USEHASH"]
 #env_useNonHash = os.environ["TC_USENONHASH"]
 #env_words = os.environ["TC_WORDS"]
 
-print "Arguments:"
-print env_outfiles
-print env_useHash
-print env_useNonHash
-print env_words
+print "Configuration"
+print json.dumps(env_outfiles, indent=2)
+print json.dumps(env_useHash, indent=2)
+print json.dumps(env_useNonHash, indent=2)
+print json.dumps(env_words, indent=2)
+print BASE_DIR
+
+#sys.exit()
 
 bad_set = ''.join([a for a in string.punctuation if a!='#'])
 downsample_fracs = {}#change this if you only want a subset of the tweets. 
@@ -169,13 +174,10 @@ if __name__ == '__main__':
     #wordsToMonitor = [a.split(',') for a in env_words.split()]
     wordsToMonitor = [[a.lower().replace('_', ' ') for a in b] for b in wordsToMonitor]
     
-    #print "DEbug"
-    #print useHashtags
-    #print useNonHashtags
     print "wordsToMonitor"
     print wordsToMonitor
-    print "range"
-    print `range(len(wordsToMonitor))`
+    #print "range"
+    #nt `range(len(wordsToMonitor))`
      
     tweetGroups = [[] for a in wordsToMonitor]
     for i in range(len(wordsToMonitor)):
