@@ -284,5 +284,23 @@ for f in */; do fname=`ls -t $f | head -n1 `; echo $f$fname; done
 
 out=`for f in */; do fname=\`ls -t $f | head -n1 \`; echo $f$fname; done`
 
+##
+
+import json
+from pprint import pprint
+
+with open('config.json') as data_file:    
+    data = json.load(data_file)
+
+pprint(data)
+
+print data["folders"]
+print data["folders"][1]
+
+print data["words"][0]
+print data["words"][1]
+
+c = data["folders"]
+print c[1]
 
 
