@@ -10,6 +10,8 @@ mkdir dist
 cp -a creds.json dist/
 cp -a config.json dist/
 cp -a tc_application.py dist/
+cp -a tc_app_setup.sh dist/
+cp -a tc_app_daily_clean.sh dist/
 cp -a tc_cron_start.sh dist/
 cp -a tc_cron_stop.sh dist/
 

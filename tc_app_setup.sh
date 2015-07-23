@@ -1,12 +1,19 @@
 #!/bin/bash
 
-cd /tmp/scripts
+script_dir="/tmp/scripts"
+log_dir="/tmp/log"
+old_dir="/tmp/old"
+
+cd ${script_dir}
 base_dir=`cat config.json | jq -r '.BASE_DIR'`
 
 echo "** Making base directory at $base_dir."
 mkdir -p $base_dir
 echo "** Copying scripts to $base_dir."
-cp -R /tmp/scripts/. $base_dir
+cp ${script_dir}/tc_application.py $base_dir
+cp ${script_dir}/creds.json $base_dir
+cp ${script_dir}/config.json $base_dir
+
 echo "** Setting up filesystem in $base_dir."
 cd $base_dir
 fd=`cat config.json | jq -r '.folders[]'`
@@ -19,5 +26,3 @@ echo "** Data folders created."
 
 echo "** Making scripts executable"
 chmod 777 tc_application.py
-chmod 777 tc_cron_start.sh
-chmod 777 tc_cron_stop.sh

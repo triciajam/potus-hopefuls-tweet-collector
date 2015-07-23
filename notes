@@ -304,7 +304,7 @@ print data["words"][1]
 c = data["folders"]
 print c[1]
 
-
+. tc_s3_upload.sh twit-candi-2016/dist/ 
 aws ec2 terminate-instances --instance-ids 
 aws ec2 run-instances --count 1 \
     --image-id $ami_id \
@@ -313,3 +313,16 @@ aws ec2 run-instances --count 1 \
     --security-groups triciajam_SG_useast \
     --instance-type t2.micro \
     --user-data file://tc_aws_start.sh 
+
+
+# these all work
+sudo crontab -l -u ec2-user | cat - crontrish  | sudo crontab -u ec2-user -
+{ sudo crontab -l -u ec2-user; echo "*/1 * * * * echo \"hiya\" >> /tmp/trish"; }  | sudo crontab -u ec2-user -
+# not sure about this one
+{ crontab -l; echo "1 */1 * * * ${script_dir}/tc_cron_start.sh ${base_dir} tc_application.py >> ${log_dir}/crlog 2>&1"; } | crontab -u ec2-user -
+
+# actual crontab
+[ec2-user@ip-172-31-34-202 twit-candi-2016]$ crontab -l
+13 */1 * * * /tmp/scripts/tc_cron_start.sh tc_application.py >> /tmp/log/crlog 2>&1
+26 */1 * * * /tmp/scripts/tc_cron_stop.sh tc_application.py >> /tmp/log/crlog 2>&1
+30 23 * * * /tmp/scripts/tc_app_daily_clean.sh >> /tmp/log/cleanlog 2>&1
