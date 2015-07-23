@@ -247,6 +247,7 @@ sudo cp jq /usr/bin
 cat clinton/clinton1 | jq '.user'
 cat clinton/clinton1 | jq '.user.id'
 cat clinton/clinton1 | jq '.text'
+cat clinton/clinton1 | jq '.created_at'
 cat clinton/clinton1 | jq '.retweeted'
 cat clinton/clinton1 | jq '.entities.user_mentions'
 cat clinton/clinton1 | jq '.entities.hashtags'
@@ -282,7 +283,7 @@ for f in */; do
 done
 for f in */; do fname=`ls -t $f | head -n1 `; echo $f$fname; done
 
-out=`for f in */; do fname=\`ls -t $f | head -n1 \`; echo $f$fname; done`
+lastones=`for f in */; do fname=\`ls -t $f | head -n1 \`; echo $f$fname; done`
 
 ##
 
@@ -304,3 +305,11 @@ c = data["folders"]
 print c[1]
 
 
+aws ec2 terminate-instances --instance-ids 
+aws ec2 run-instances --count 1 \
+    --image-id $ami_id \
+    --iam-instance-profile Arn=arn:aws:iam::520531084022:instance-profile/access-buckets \
+    --key-name thesis \
+    --security-groups triciajam_SG_useast \
+    --instance-type t2.micro \
+    --user-data file://tc_aws_start.sh 

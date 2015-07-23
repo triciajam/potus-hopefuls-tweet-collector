@@ -5,3 +5,4 @@
 !.elasticbeanstalk/*.global.yml
 .Rproj.user
 .Rhistory
+creds.json

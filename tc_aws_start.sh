@@ -11,37 +11,36 @@ zone=$(wget -qO- instance-data/latest/meta-data/placement/availability-zone)
 region=$(expr match $zone '\(.*\).')
 uptime=$(uptime)
 
-echo "Working On $instance_id @ $public_ip"
+echo "** Working On $instance_id @ $public_ip"
 
-echo "Existing Packages"
-which python
-python --version
-which pip
-pip --version
-which virtualenv
+echo "** Existing Packages"
+echo "python: "`which python`
+echo "python version: "`python --version`
+echo "pip: "`which pip`
+echo "pip version: "`pip --version`
+echo "virtualenv: "`which virtualenv`
+echo "virtualenv version: "`virtualenv --version`
+
 #sudo alternatives --set python /usr/bin/python2.6
 
-
-echo "Creating Virtual Environment"
+echo "** Creating Virtual Environment"
 mkdir /tmp/venv
 cd /tmp/venv
 virtualenv tc
 source tc/bin/activate
 
-echo "Upgrading Packages"
+echo "** Upgrading Packages"
 yum -y update
 
-echo "Upgrading Pip"
+echo "** Upgrading Pip"
 pip install --upgrade pip
 #hash -r
 #ln -s /usr/local/bin/pip-2.7 /usr/bin/pip 
-which python
-which pip
 
-echo "Installing jq"
+echo "** Installing jq"
 yum -y install jq
 
-echo "Installing Python Dependencies"
+echo "** Installing Python Dependencies"
 pip install oauthlib
 pip install requests
 pip install requests-oauthlib
@@ -51,47 +50,49 @@ pip install wheel
 pip install boto
 pip install sh
 
-echo "All packages installed."
+echo "** All packages installed."
 
-
-echo "Making base directory."
-mkdir -p /tmp
-mkdir -p /tmp/twit-candi-2016
-mkdir -p /tmp/twit-candi-2016/dist
+echo "** Current Package Locations"
+echo "python: "`which python`
+echo "python version: "`python --version`
+echo "pip: "`which pip`
+echo "pip version: "`pip --version`
+echo "virtualenv: "`which virtualenv`
+echo "virtualenv version: "`virtualenv --version`
 
 # grab the script and JSON files
-echo "Retrieving application scripts."
-aws s3 sync s3://twit-candi-2016/dist/ /tmp/twit-candi-2016/dist 
-#curl -L -o /tmp/tc_application.py github.com/triciajam/twit-candi-2016/raw/master/tc_application.py
-#curl -L -o /tmp/config.json github.com/triciajam/twit-candi-2016/raw/master/config.json
+mkdir -p /tmp/scripts
+cd /tmp/scripts
+echo "** Retrieving application scripts"
+aws s3 sync s3://twit-candi-2016/dist/ . 
+base_dir=`cat config.json | jq -r '.BASE_DIR'`
 
-echo "Setting up filesystem."
-cd /tmp/twit-candi-2016/dist
-chmod 777 tc_application.py
-
-#cat config.json | jq '.folders'
-#cat config.json | jq '.folders[]'
-#cat config.json | jq '[.folders[]]'
-
+echo "** Making base directory at $base_dir."
+mkdir -p $base_dir
+echo "** Copying scripts to $base_dir."
+cp -R /tmp/scripts/. $base_dir
+echo "** Setting up filesystem in $base_dir."
+cd $base_dir
 fd=`cat config.json | jq -r '.folders[]'`
-echo "Data folders to create are $fd"
+echo "** Data folders are $fd"
 
 for f in $fd; do
-  mkdir -p /tmp/twit-candi-2016/dist/$f
+  mkdir -p $base_dir$f
 done  
-echo "Data folders created."
+echo "** Data folders created."
 
-echo "Setting up cron."
-crontab -l
+echo "** Changing permissions and ownership."
+chmod 777 tc_application.py
+chmod 777 tc_cron_start.sh
+chmod 777 tc_cron_stop.sh
+chown -R ec2-user:ec2-user $base_dir
+
+echo "** Setting up cron."
 dt=$(date '+%Y%m%d.%H%M%S');
-echo "0 */3 * * * root aws s3 cp /tmp/twit-candi-2016/dist s3://twit-candi-2016/data/$dt/ --recursive --exclude creds.json" >> /etc/crontab
-crontab -l
-
-echo "Starting application."
-python tc_application.py
-
-# get the instance id
-# INSTANCE_ID=`ec2metadata --instance-id`
- 
-# terminate the instance - you must specify the region
-# aws ec2 terminate-instances --region $region --instance-ids $INSTANCE_ID
+# run every hour
+echo "3 */1 * * * ec2-user ${base_dir}tc_cron_start.sh ${base_dir} tc_application.py >> ${base_dir}tclog 2>&1" >> /etc/crontab
+echo "16 */1 * * * ec2-user ${base_dir}tc_cron_stop.sh ${base_dir} tc_application.py >> ${base_dir}tclog 2>&1" >> /etc/crontab
+#echo "13 */1 * * * root aws s3 cp /tmp/twit-candi-2016/dist s3://twit-candi-2016/data/$dt/ --recursive --exclude creds.json" >> /etc/crontab
+cat /etc/crontab
+#echo "Starting application."
+#python tc_application.py
