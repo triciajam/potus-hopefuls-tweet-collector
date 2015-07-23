@@ -65,33 +65,25 @@ mkdir -p /tmp/scripts
 cd /tmp/scripts
 echo "** Retrieving application scripts"
 aws s3 sync s3://twit-candi-2016/dist/ . 
-base_dir=`cat config.json | jq -r '.BASE_DIR'`
+chmod 777 *.py
+chmod 777 *.sh
+echo "** Setting up file system for app"
+. /tmp/tc_app_setup.sh
+echo "** Making backup directory"
+mkdir -p /tmp/old
 
-echo "** Making base directory at $base_dir."
-mkdir -p $base_dir
-echo "** Copying scripts to $base_dir."
-cp -R /tmp/scripts/. $base_dir
-echo "** Setting up filesystem in $base_dir."
-cd $base_dir
-fd=`cat config.json | jq -r '.folders[]'`
-echo "** Data folders are $fd"
-
-for f in $fd; do
-  mkdir -p $base_dir$f
-done  
-echo "** Data folders created."
-
-echo "** Changing permissions and ownership."
-chmod 777 tc_application.py
-chmod 777 tc_cron_start.sh
-chmod 777 tc_cron_stop.sh
+echo "** Setting owner to ec2-user"
+chown -R ec2-user:ec2-user /tmp/scripts
+chown -R ec2-user:ec2-user /tmp/old
 chown -R ec2-user:ec2-user $base_dir
+
 
 echo "** Setting up cron."
 dt=$(date '+%Y%m%d.%H%M%S');
 # run every hour
 echo "3 */1 * * * ec2-user ${base_dir}tc_cron_start.sh ${base_dir} tc_application.py >> ${base_dir}tclog 2>&1" >> /etc/crontab
 echo "16 */1 * * * ec2-user ${base_dir}tc_cron_stop.sh ${base_dir} tc_application.py >> ${base_dir}tclog 2>&1" >> /etc/crontab
+echo "30 23 * * * ec2-user /tmp/tc_app_daily_clean.sh >> ${base_dir}tclog 2>&1" >> /etc/crontab
 #echo "13 */1 * * * root aws s3 cp /tmp/twit-candi-2016/dist s3://twit-candi-2016/data/$dt/ --recursive --exclude creds.json" >> /etc/crontab
 cat /etc/crontab
 #echo "Starting application."
