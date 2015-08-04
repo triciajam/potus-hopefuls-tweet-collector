@@ -7,6 +7,8 @@ log_dir="/tmp/log"
 old_dir="/tmp/old"
 base_dir=`cat ${script_dir}/config.json | jq -r '.BASE_DIR'`
 
+# should check here to make sure all directories exist.....
+
 dt=$(date '+%Y%m%d.%H%M%S');
 echo "** $dt: Starting ${base_dir}$1"
 
