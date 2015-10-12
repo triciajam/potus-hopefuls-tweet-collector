@@ -336,3 +336,70 @@ sudo crontab -l -u ec2-user | cat - crontrish  | sudo crontab -u ec2-user -
 30 23 * * * /tmp/scripts/tc_app_daily_clean.sh >> /tmp/log/cleanlog 2>&1
 
 aws s3 ls s3://twit-candi-2016/data --recursive  | grep -v -E "(Bucket: |Prefix: |LastWriteTime|^$|--)" | awk 'BEGIN {total=0}{total+=$3}END{print total/1024/1024" MB"}'
+
+############################
+# NEW SETUP
+# CHANGE THE DIRECTORIES
+
+echo 'export app_dir=~/twit-candi-2016' >> /home/ec2-user/.bash_profile
+echo 'export data_dir=~/twit-candi-2016/data' >> /home/ec2-user/.bash_profile
+echo 'export script_dir=~/twit-candi-2016/dist' >> /home/ec2-user/.bash_profile
+echo 'export log_dir=~/twit-candi-2016/log' >> /home/ec2-user/.bash_profile
+echo 'export old_dir=~/twit-candi-2016/old' >> /home/ec2-user/.bash_profile
+. ~/.bash_profile
+
+
+mkdir -p ${app_dir}/venv
+cd ${app_dir}/venv
+virtualenv tc
+source tc/bin/activate
+
+echo "** Upgrading Packages"
+yum -y update
+
+echo "** Upgrading Pip"
+pip install --upgrade pip
+#hash -r
+#ln -s /usr/local/bin/pip-2.7 /usr/bin/pip 
+
+echo "** Installing jq"
+yum -y install jq
+
+echo "** Installing Python Dependencies"
+pip install oauthlib
+pip install requests
+pip install requests-oauthlib
+pip install six
+pip install tweepy
+pip install wheel
+pip install boto
+pip install sh
+
+# grab the script and JSON files
+cd $app_dir
+mkdir -p $script_dir
+echo "** Retrieving application scripts"
+aws s3 sync s3://twit-candi-2016/dist2/ $script_dir --dryrun
+chmod 777 ${script_dir}/*.py
+chmod 777 ${script_dir}/*.sh
+
+echo "** Setting up app"
+. ${script_dir}/tc_app_setup.sh
+
+echo "** Making backup directory"
+mkdir -p $old_dir
+echo "** Making log directory"
+mkdir -p $log_dir
+
+echo "** Setting owner to ec2-user"
+chown -R ec2-user:ec2-user $app_dir
+
+echo "** Setting up cron."
+dt=$(date '+%Y%m%d.%H%M%S');
+# run every hour
+
+{ crontab -l -u ec2-user; echo "1 */1 * * * ${script_dir}/tc_cron_start.sh tc_application.py >> ${log_dir}/crlog 2>&1"; } | crontab -u ec2-user -
+{ crontab -l -u ec2-user; echo "13 */1 * * * ${script_dir}/tc_cron_stop.sh tc_application.py >> ${log_dir}/crlog 2>&1"; } | crontab -u ec2-user -
+{ crontab -l -u ec2-user; echo "30 23 * * * ${script_dir}/tc_app_daily_clean.sh >> ${log_dir}cleanlog 2>&1"; } | crontab -u ec2-user -
+
+crontab -l -u ec2-user

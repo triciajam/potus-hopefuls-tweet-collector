@@ -1,17 +1,19 @@
 #!/bin/bash
 
+source $HOME/.bash_profile
+
+dateonly=$(date '+%Y%m%d');
 datetime=$(date '+%Y%m%d.%H%M%S');
-base_dir=`cat /tmp/scripts/config.json | jq -r '.BASE_DIR'`
-archive_dir="/tmp/old/${datetime}"
+#base_dir=`cat /tmp/scripts/config.json | jq -r '.BASE_DIR'`
+archive_dir="${old_dir}/${dateonly}"
 
-echo "** Archiving current base directory $base_dir at archive ${archive_dir}."
+echo "** ${dateonly} [ TC-CLEAN ] : Archiving current base directory $data_dir at archive ${old_dir}."
 mkdir -p $archive_dir
-cp -R ${base_dir}. ${archive_dir}/
+cp -R ${data_dir}/* ${archive_dir}/
 
-echo "** Removing current base directory at $base_dir"
-rm -r ${base_dir}
+echo "** ${dateonly} [ TC-CLEAN ] : Removing current data directory at $data_dir"
+rm -r ${data_dir}
+echo "** ${dateonly} [ TC-CLEAN ] : Making new base directory"
+. ${script_dir}/tc_app_setup.sh
 
-echo "** Making new base directory"
-. /tmp/scripts/tc_app_setup.sh
-
-echo "** All done"
+echo "** ${dateonly} [ TC-CLEAN ] : All done"
