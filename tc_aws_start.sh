@@ -95,5 +95,7 @@ dt=$(date '+%Y%m%d.%H%M%S');
 { crontab -l -u ec2-user; echo "30 23 * * * ${script_dir}/tc_app_daily_clean.sh >> ${log_dir}cleanlog 2>&1"; } | crontab -u ec2-user -
 
 crontab -l -u ec2-user
+
+#crontab -e to edit
 #echo "Starting application."
 #python tc_application.py
