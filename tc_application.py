@@ -27,10 +27,11 @@ env_useNonHash = config["useNonHash"]
 env_words = config["words"]
 cats = config["categories"]
 cands = config["candidates"]
-BASE_DIR = config["BASE_DIR"]
+#BASE_DIR = config["BASE_DIR"]
+BASE_DIR = os.environ["data_dir"] + "/"
 
 if mode=="test":
-  BASE_DIR="/Users/trish/Desktop/Projects/twitcamp/"
+  BASE_DIR="/Users/triciajam/Documents/prev/Projects/twitcamp/"
 
 
 #env_outfiles = os.environ["TC_OUTF"]
