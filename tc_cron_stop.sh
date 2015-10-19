@@ -4,7 +4,7 @@
 
 source $HOME/.bash_profile
 
-datetime=$(date '+%Y-%m-%d-%H-%M-%S');
+datetime=$(date '+%Y-%m-%d.%H-%M-%S');
 dateonly=$(date -u '+%Y%m%d');
 details="${log_dir}/${datetime}.details"
 
@@ -19,7 +19,7 @@ echo "** $datetime [ TC-STOP ] : Ended $1 at $pid"
 
 dirs=`ls -d $data_dir/*/`
 lastfiles=( `for d in $dirs; do name=\`ls -t  $d | head -n1\`; echo $d$name ; done` ) # find very last files
-echo "** $datetime [ TC-STOP ] : There are ${#lastfiles[@]} last files written (in each folder)."  
+echo "** $datetime [ TC-STOP ] : There are ${#lastfiles[@]} last files (max 1 in each folder)."  
 
 chour=`date +"%H"`
 cdate=`date +"%Y-%m-%d"`
@@ -53,7 +53,11 @@ if [[ ${#filesthishour[@]} -ne 0 ]]; then
     fi  
     echo "$f: has $linesatstart at start" >> $details
     if [[ $linesatstart != 0 || $linesatend != 0 ]] ; then 
-      tail -n +${linesatstart} $f | head -n -${linesatend} > "$f.new" && mv "$f.new" "$f"
+      {
+        tail -n +${linesatstart} $f | head -n -${linesatend} > "$f.new" && mv "$f.new" "$f"
+      } || {
+        echo "** $datetime [ TC-STOP ] : ERROR : While removing tweets from $f .";
+      }
     fi  
   done
   
@@ -62,7 +66,7 @@ fi
 #} && {
 #  echo "** $datetime [ TC-STOP ] : SUCCESS : Removed last tweets beyond the specified time range."
 #} || {
-#  echo "** $datetime [ TC-STOP ] : ERROR : While removing lasttweets beyond the specified minute range."
+#  
 #} 
 
 
@@ -81,13 +85,14 @@ echo "** $datetime [ TC-STOP ] : Copying files to s3"
 #aws s3 sync $base_dir s3://twit-candi-2016/data/$dateonly/ --recursive --exclude "*.json" --exclude "*.sh" --exclude "*.py" --exclude "pid*" --exclude "tclog" --include "config.json"
 
 {
-  aws s3 sync $data_dir s3://twit-candi-2016/data/$dateonly/ --exclude "*.json" --exclude "*.sh" --exclude "*.py" --exclude "pid*" --include "config.json" >> $details 2>&1
+  aws s3 sync $data_dir s3://twit-candi-2016/data/$dateonly/ --exclude "*.json" --exclude "*.sh" --exclude "*.py" --exclude "pid*" >> $details 2>&1
 } && {
   numupload=`cat $details | grep "upload" | wc -l `
   echo "** $datetime [ TC-STOP ] : SUCCESS : Copied all $numupload files to S3."
 } || {
-  echo "** $datetime [ TC-STOP ] : ERROR : Error while copying some files to S3."
+  numupload=`cat $details | grep "upload" | wc -l `
+  echo "** $datetime [ TC-STOP ] : ERROR : Copied only $numupload files to S3."
 }
-
-
-echo "** $datetime [ TC-STOP ] : Files copied"
+if [[ "$numupload" -ne "${#filesthishour[@]}" ]]; then
+  echo "** $datetime [ TC-STOP ] : ERROR : Num new files ( ${#filesthishour[@]} ) does not match number copied to AWS ( ${numupload} )."  
+fi
