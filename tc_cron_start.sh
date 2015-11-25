@@ -6,7 +6,7 @@
 
 source $HOME/.bash_profile
 
-dt=$(date '+%Y%m%d.%H%M%S');
+dt=$(date -u '+%Y-%m-%d.%H-%M-%S');
 echo "** $dt [ TC-START ] : Starting ${data_dir}/$1"
 
 source ${app_dir}/venv/tc/bin/activate

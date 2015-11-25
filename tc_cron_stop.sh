@@ -4,7 +4,7 @@
 
 source $HOME/.bash_profile
 
-datetime=$(date '+%Y-%m-%d.%H-%M-%S');
+datetime=$(date -u '+%Y-%m-%d.%H-%M-%S');
 dateonly=$(date -u '+%Y%m%d');
 details="${log_dir}/${datetime}.details"
 
@@ -32,7 +32,10 @@ echo "** $datetime [ TC-STOP ] : There were ${#filesthishour[@]} files written t
 if [[ ${#lastfilesthishour[@]} -ne 0 ]]; then
   echo "** $datetime [ TC-STOP ] : Removing incomplete lines from last files written this hour."
   {
-    for f in ${lastfilesthishour[@]}; do sed -i '$ d' $f >> $details 2>&1 ; done
+    for f in ${lastfilesthishour[@]}; do 
+      echo "removing last line from $f" >> $details
+      sed -i '$ d' $f >> $details 2>&1 
+    done
   } && {
     echo "** $datetime [ TC-STOP ] : SUCCESS : Removed last incomplete lines from ${#lastfilesthishour[@]} files."
   } || {
