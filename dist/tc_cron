@@ -1,0 +1,8 @@
+MAILTO=tricia.jamison@gmail.com
+
+4 */1 * * * /home/ec2-user/twit-candi-2016/dist/tc_cron_start.sh tc_application.py >> /home/ec2-user/twit-candi-2016/log/crlog 2>&1
+18 */1 * * * /home/ec2-user/twit-candi-2016/dist/tc_cron_stop.sh tc_application.py >> /home/ec2-user/twit-candi-2016/log/crlog 2>&1
+35 23 * * * /home/ec2-user/twit-candi-2016/dist/tc_app_daily_clean.sh >> /home/ec2-user/twit-candi-2016/log/cleanlog 2>&1
+50 23 * * * find /home/ec2-user/twit-candi-2016/old/ -type d -mtime +5 -exec rm -rf {} \; >> /home/ec2-user/twit-candi-2016/log/cleanlog 2>&1
+55 23 * * * find /home/ec2-user/twit-candi-2016/log/ -mtime +14 -exec rm {} \; >> /home/ec2-user/twit-candi-2016/log/cleanlog 2>&1
+
