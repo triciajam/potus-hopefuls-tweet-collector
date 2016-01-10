@@ -1,13 +1,13 @@
 # twit-candi-2016
-Tweet "ingestor" for the 2016 Presidential Candidates.
+Tweet "ingestor" for the 2016 Presidential primary candidates.
 
-Python script (tc_application.py) just slightly modified from Emma Pierson's [mineTweets.py](https://github.com/epierson9/TwitterTools).  Updated to read twitter credentials and application config from JSON files, and to explicitly handle unicode characters.
+The core is a python script (tc_application.py) just slightly modified from Emma Pierson's [mineTweets.py](https://github.com/epierson9/TwitterTools).  I updated the script to read twitter credentials and application configuration information from JSON files, and to explicitly handle unicode characters.
 
-The script collects tweets that "mention" a candidate, not just tweets that reference official campaign accounts.  What constitues a mention for each candidate is defined in config.json. Generally, it is their official campaign account/accounts,   their name, and their name plus "2016".  
+The script collects tweets containing text defined as a "mention" of a candidate.  Mentions are currently configured as candidate first and last name, candidate first or last name plus "2016", official campaign accounts, certain campaign hashtags.  
 
-Currently running for 12 minutes -- from minutes 5 to 16 inclusive -- every hour on AWS box, and storing the collected tweets in S3.  Would ideally run for longer, but need to get a sense of storage costs.    
+Cron scripts start and stop the python script.  Tweets are written to a file as they are collected.  Files are synced with Amazon S3 storage every hour.  Currently running for 12 minutes -- from minutes 5 to 16 inclusive -- every hour on an AWS box.
 
-My goal is to collect tweets through the 2016 election.  
+My goal is to collect tweets until 2016 general election.  
 
-Working on this [user interface](https://github.com/triciajam/twit-candi-ui) for analyzing the data.  Visualization is currently
-only running on local machine; hoping to have one live on AWS shortly.
+Working on [twit-candi-ui](https://github.com/triciajam/twit-candi-ui) to visualize the data.
+Also working on [real-time collection and visualization](https://github.com/triciajam/realtime-twitter) using a message queue middle layer.
