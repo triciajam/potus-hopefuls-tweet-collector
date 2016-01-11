@@ -13,6 +13,6 @@ data/ folder must be created - files are written to candidate subfolders created
 
 My goal is to collect tweets until 2016 general election.  
 
-See [twit-candi-ui](https://github.com/triciajam/twit-candi-ui) for visualization project.
+See [potus-hopefuls-tweet-ui](https://github.com/triciajam/potus-hopefuls-tweet-ui) for visualization project.
 
-Also working on [real-time collection and visualization](https://github.com/triciajam/realtime-twitter) using a message queue middle layer.
+Also working on [real-time collection and visualization](https://github.com/triciajam/potus-hopefuls-realtime-twitter) using a message queue middle layer.
