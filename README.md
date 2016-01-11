@@ -1,4 +1,4 @@
-# twit-candi-2016
+# potus-hopefuls-tweet-collector
 Tweet "ingestor" for the 2016 Presidential primary candidates.
 
 The core is a python script (tc_application.py) just slightly modified from Emma Pierson's [mineTweets.py](https://github.com/epierson9/TwitterTools).  I updated the script to read twitter credentials and application configuration information from JSON files, and to explicitly handle unicode characters.
